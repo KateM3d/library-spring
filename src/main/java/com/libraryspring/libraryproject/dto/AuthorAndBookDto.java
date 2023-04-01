@@ -11,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class GenreDto {
+public class AuthorAndBookDto {
     private Long id;
     private String name;
-    private List<AuthorAndBookDto> books;
+    private String author;
 }

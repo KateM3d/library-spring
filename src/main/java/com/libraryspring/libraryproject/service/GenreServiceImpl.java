@@ -1,5 +1,6 @@
 package com.libraryspring.libraryproject.service;
 
+import com.libraryspring.libraryproject.dto.AuthorAndBookDto;
 import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.GenreDto;
@@ -23,12 +24,11 @@ public class GenreServiceImpl implements GenreService {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow();
 
-        List<BookDto> bookDtoList = genre.getBooks()
+        List<AuthorAndBookDto> authorAndBookDtoList = genre.getBooks()
                 .stream()
-                .map(book -> BookDto.builder()
+                .map(book -> AuthorAndBookDto.builder()
                         .id(book.getId())
                         .name(book.getName())
-                        .genre(book.getGenre().getName())
                         .author(book.getAuthors()
                                 .stream()
                                 .map(author -> author.getName() + " " + author.getSurname())
@@ -39,7 +39,7 @@ public class GenreServiceImpl implements GenreService {
         GenreDto genreDto = new GenreDto();
         genreDto.setId(genre.getId());
         genreDto.setName(genre.getName());
-        genreDto.setBooks(bookDtoList);
+        genreDto.setBooks(authorAndBookDtoList);
         return genreDto;
     }
 }
