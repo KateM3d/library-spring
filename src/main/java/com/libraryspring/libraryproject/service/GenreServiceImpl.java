@@ -50,6 +50,7 @@ public class GenreServiceImpl implements GenreService {
                                 .map(book -> BookDto.builder()
                                         .id(book.getId())
                                         .name(book.getName())
+                                        .genre(book.getGenre().getName())
                                         .build())
                                 .collect(Collectors.toList()))
 
