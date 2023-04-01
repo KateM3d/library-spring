@@ -1,6 +1,11 @@
 package com.libraryspring.libraryproject.service;
+import com.libraryspring.libraryproject.dto.GenreBookWithAuthorDto;
 import com.libraryspring.libraryproject.dto.GenreDto;
 
+import java.util.List;
+
 public interface GenreService {
-    GenreDto getGenreById(Long id);
+    GenreBookWithAuthorDto getGenreById(Long id);
+
+    List<GenreDto> getAllGenres();
 }

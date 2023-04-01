@@ -1,11 +1,6 @@
 package com.libraryspring.libraryproject.service;
 
-import com.libraryspring.libraryproject.dto.AuthorAndBookDto;
-import com.libraryspring.libraryproject.dto.AuthorDto;
-import com.libraryspring.libraryproject.dto.BookDto;
-import com.libraryspring.libraryproject.dto.GenreDto;
-import com.libraryspring.libraryproject.model.Author;
-import com.libraryspring.libraryproject.model.Book;
+import com.libraryspring.libraryproject.dto.*;
 import com.libraryspring.libraryproject.model.Genre;
 import com.libraryspring.libraryproject.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +15,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
-    public GenreDto getGenreById(Long id) {
+    public GenreBookWithAuthorDto getGenreById(Long id) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow();
 
@@ -36,10 +31,28 @@ public class GenreServiceImpl implements GenreService {
                         .build())
                 .collect(Collectors.toList());
 
-        GenreDto genreDto = new GenreDto();
-        genreDto.setId(genre.getId());
-        genreDto.setName(genre.getName());
-        genreDto.setBooks(authorAndBookDtoList);
-        return genreDto;
+        GenreBookWithAuthorDto genreBookWithAuthorDto = new GenreBookWithAuthorDto();
+        genreBookWithAuthorDto.setId(genre.getId());
+        genreBookWithAuthorDto.setName(genre.getName());
+        genreBookWithAuthorDto.setBooks(authorAndBookDtoList);
+        return genreBookWithAuthorDto;
     }
+
+    @Override
+    public List<GenreDto> getAllGenres() {
+        List<Genre> genres = genreRepository.findAll();
+        return genres.stream()
+                .map(genre -> GenreDto.builder()
+                        .id(genre.getId())
+                        .name(genre.getName())
+                        .books(genre.getBooks()
+                                .stream()
+                                .map(book -> BookDto.builder()
+                                        .id(book.getId())
+                                        .name(book.getName())
+                                        .build())
+                                .collect(Collectors.toList()))
+
+                        .build())
+                .collect(Collectors.toList());    }
 }
