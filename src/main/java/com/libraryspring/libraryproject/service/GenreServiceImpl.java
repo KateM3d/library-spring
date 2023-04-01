@@ -1,4 +1,5 @@
 package com.libraryspring.libraryproject.service;
+
 import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.GenreDto;
@@ -27,6 +28,7 @@ public class GenreServiceImpl implements GenreService {
                 .map(book -> BookDto.builder()
                         .id(book.getId())
                         .name(book.getName())
+                        .genre(book.getGenre().getName())
                         .author(book.getAuthors()
                                 .stream()
                                 .map(author -> author.getName() + " " + author.getSurname())
