@@ -2,6 +2,7 @@ package com.libraryspring.libraryproject.controller;
 
 import com.libraryspring.libraryproject.dto.AuthorCreateDto;
 import com.libraryspring.libraryproject.dto.AuthorDto;
+import com.libraryspring.libraryproject.dto.AuthorUpdateDto;
 import com.libraryspring.libraryproject.service.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +31,22 @@ public class AuthorController {
     }
 
     @GetMapping("/author/v2")
-    AuthorDto getAuthorByNameV2(@RequestParam("name") String name){
+    AuthorDto getAuthorByNameV2(@RequestParam("name") String name) {
         return authorService.getByNameV2(name);
     }
 
     @GetMapping("/author/v3")
-    AuthorDto getAuthorByNameV3(@RequestParam("name") String name){
+    AuthorDto getAuthorByNameV3(@RequestParam("name") String name) {
         return authorService.getByNameV3(name);
     }
 
     @PostMapping("/author/create")
     AuthorDto createAuthor(@RequestBody AuthorCreateDto authorCreateDto) {
         return authorService.createAuthor(authorCreateDto);
+    }
+
+    @PutMapping("/author/update")
+    AuthorDto updateAuthor(@RequestBody AuthorUpdateDto authorUpdateDto) {
+        return authorService.updateAuthor(authorUpdateDto);
     }
 }

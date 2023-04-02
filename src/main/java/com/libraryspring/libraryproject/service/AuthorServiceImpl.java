@@ -2,6 +2,7 @@ package com.libraryspring.libraryproject.service;
 
 import com.libraryspring.libraryproject.dto.AuthorCreateDto;
 import com.libraryspring.libraryproject.dto.AuthorDto;
+import com.libraryspring.libraryproject.dto.AuthorUpdateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.model.Author;
 import com.libraryspring.libraryproject.repository.AuthorRepository;
@@ -63,6 +64,18 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
         Author author = authorRepository.save(convertDtoToEntity(authorCreateDto));
         AuthorDto authorDto = convertEntityToDto(author);
+        return authorDto;
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto) {
+        Author author = authorRepository.findById(authorUpdateDto.getId())
+                .orElseThrow();
+       author.setName(authorUpdateDto.getName());
+       author.setSurname(authorUpdateDto.getSurname());
+
+       Author savedAuthor = authorRepository.save(author);
+        AuthorDto authorDto = convertEntityToDto(savedAuthor);
         return authorDto;
     }
 

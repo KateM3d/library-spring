@@ -1,9 +1,6 @@
 package com.libraryspring.libraryproject.service;
 
-import com.libraryspring.libraryproject.dto.AuthorCreateDto;
-import com.libraryspring.libraryproject.dto.AuthorDto;
-import com.libraryspring.libraryproject.dto.BookDto;
-import com.libraryspring.libraryproject.dto.GenreDto;
+import com.libraryspring.libraryproject.dto.*;
 
 import java.util.List;
 
@@ -20,4 +17,6 @@ public interface AuthorService {
     AuthorDto getByNameV3(String name);
 
     AuthorDto createAuthor(AuthorCreateDto authorCreateDto);
+
+    AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto);
 }
