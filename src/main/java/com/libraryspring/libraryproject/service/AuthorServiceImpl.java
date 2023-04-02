@@ -1,9 +1,9 @@
 package com.libraryspring.libraryproject.service;
 
+import com.libraryspring.libraryproject.dto.AuthorCreateDto;
 import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.model.Author;
-import com.libraryspring.libraryproject.model.Book;
 import com.libraryspring.libraryproject.repository.AuthorRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -60,6 +60,20 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
+        Author author = authorRepository.save(convertDtoToEntity(authorCreateDto));
+        AuthorDto authorDto = convertEntityToDto(author);
+        return authorDto;
+    }
+
+    private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
+        return Author.builder()
+                .name(authorCreateDto.getName())
+                .surname(authorCreateDto.getSurname())
+                .build();
+    }
+
+    @Override
     public List<AuthorDto> getAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         return authors.stream()
@@ -83,15 +97,18 @@ public class AuthorServiceImpl implements AuthorService {
 
     private AuthorDto convertEntityToDto(Author author) {
 
-        List<BookDto> bookDtoList = author.getBooks()
-                .stream()
-                .map(book -> BookDto.builder()
-                        .genre(book.getGenre()
-                                .getName())
-                        .name(book.getName())
-                        .id(book.getId())
-                        .build())
-                .toList();
+        List<BookDto> bookDtoList = null;
+        if (author.getBooks() != null) {
+            bookDtoList = author.getBooks()
+                    .stream()
+                    .map(book -> BookDto.builder()
+                            .genre(book.getGenre()
+                                    .getName())
+                            .name(book.getName())
+                            .id(book.getId())
+                            .build())
+                    .toList();
+        }
 
         AuthorDto authorDto = AuthorDto.builder()
                 .id(author.getId())
