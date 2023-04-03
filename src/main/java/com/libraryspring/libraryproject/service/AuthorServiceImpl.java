@@ -78,12 +78,9 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorDto authorDto = convertEntityToDto(savedAuthor);
         return authorDto;
     }
-
-    private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
-        return Author.builder()
-                .name(authorCreateDto.getName())
-                .surname(authorCreateDto.getSurname())
-                .build();
+    @Override
+    public void deleteAuthor(Long id) {
+        authorRepository.deleteById(id);
     }
 
     @Override
@@ -106,6 +103,13 @@ public class AuthorServiceImpl implements AuthorService {
 
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
+        return Author.builder()
+                .name(authorCreateDto.getName())
+                .surname(authorCreateDto.getSurname())
+                .build();
     }
 
     private AuthorDto convertEntityToDto(Author author) {
@@ -131,4 +135,6 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
         return authorDto;
     }
+
+
 }
