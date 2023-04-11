@@ -1,4 +1,5 @@
 package com.libraryspring.libraryproject.model;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,4 +21,8 @@ public class Genre {
 
     @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
     private Set<Book> books;
+
+    public Genre(String name) {
+        this.name = name;
+    }
 }
