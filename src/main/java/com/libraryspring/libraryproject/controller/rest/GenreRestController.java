@@ -1,4 +1,4 @@
-package com.libraryspring.libraryproject.controller;
+package com.libraryspring.libraryproject.controller.rest;
 
 import com.libraryspring.libraryproject.dto.GenreBookWithAuthorDto;
 import com.libraryspring.libraryproject.dto.GenreDto;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class GenreController {
+public class GenreRestController {
     private final GenreService genreService;
     @GetMapping("/genres")
     public List<GenreDto> getAllGenres() {
