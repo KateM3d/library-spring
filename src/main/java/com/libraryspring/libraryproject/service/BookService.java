@@ -2,7 +2,12 @@ package com.libraryspring.libraryproject.service;
 
 import com.libraryspring.libraryproject.dto.*;
 
+import java.util.List;
+
 public interface BookService {
+
+    List<BookDto> getAllBooks();
+
     BookDto getByNameV1(String name);
 
     BookDto getByNameV2(String name);

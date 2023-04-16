@@ -1,10 +1,8 @@
 package com.libraryspring.libraryproject.service;
 
-import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookCreateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.BookUpdateDto;
-import com.libraryspring.libraryproject.model.Author;
 import com.libraryspring.libraryproject.model.Book;
 import com.libraryspring.libraryproject.model.Genre;
 import com.libraryspring.libraryproject.repository.BookRepository;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,11 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
 
+    @Override
+    public List<BookDto> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
 
     @Override
     public BookDto getByNameV1(String name) {
