@@ -1,9 +1,10 @@
 package com.libraryspring.libraryproject.service;
 
+import com.libraryspring.libraryproject.dto.AuthorCreateDto;
 import com.libraryspring.libraryproject.dto.AuthorDto;
+import com.libraryspring.libraryproject.dto.AuthorUpdateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.model.Author;
-import com.libraryspring.libraryproject.model.Book;
 import com.libraryspring.libraryproject.repository.AuthorRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -60,6 +61,29 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
+        Author author = authorRepository.save(convertDtoToEntity(authorCreateDto));
+        AuthorDto authorDto = convertEntityToDto(author);
+        return authorDto;
+    }
+
+    @Override
+    public AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto) {
+        Author author = authorRepository.findById(authorUpdateDto.getId())
+                .orElseThrow();
+       author.setName(authorUpdateDto.getName());
+       author.setSurname(authorUpdateDto.getSurname());
+
+       Author savedAuthor = authorRepository.save(author);
+        AuthorDto authorDto = convertEntityToDto(savedAuthor);
+        return authorDto;
+    }
+    @Override
+    public void deleteAuthor(Long id) {
+        authorRepository.deleteById(id);
+    }
+
+    @Override
     public List<AuthorDto> getAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         return authors.stream()
@@ -81,17 +105,27 @@ public class AuthorServiceImpl implements AuthorService {
                 .collect(Collectors.toList());
     }
 
+    private Author convertDtoToEntity(AuthorCreateDto authorCreateDto) {
+        return Author.builder()
+                .name(authorCreateDto.getName())
+                .surname(authorCreateDto.getSurname())
+                .build();
+    }
+
     private AuthorDto convertEntityToDto(Author author) {
 
-        List<BookDto> bookDtoList = author.getBooks()
-                .stream()
-                .map(book -> BookDto.builder()
-                        .genre(book.getGenre()
-                                .getName())
-                        .name(book.getName())
-                        .id(book.getId())
-                        .build())
-                .toList();
+        List<BookDto> bookDtoList = null;
+        if (author.getBooks() != null) {
+            bookDtoList = author.getBooks()
+                    .stream()
+                    .map(book -> BookDto.builder()
+                            .genre(book.getGenre()
+                                    .getName())
+                            .name(book.getName())
+                            .id(book.getId())
+                            .build())
+                    .toList();
+        }
 
         AuthorDto authorDto = AuthorDto.builder()
                 .id(author.getId())
@@ -101,4 +135,6 @@ public class AuthorServiceImpl implements AuthorService {
                 .build();
         return authorDto;
     }
+
+
 }
