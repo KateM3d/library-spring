@@ -31,11 +31,11 @@ public class SecurityConfig {
     public UserDetailsService users() {
         User.UserBuilder users = User.withDefaultPasswordEncoder();
         UserDetails user = users.username("user")
-                .password("password")
+                .password("password1")
                 .roles("USER")
                 .build();
         UserDetails admin = users.username("admin")
-                .password("password")
+                .password("password2")
                 .roles("USER", "ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
