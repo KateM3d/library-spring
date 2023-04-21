@@ -15,11 +15,6 @@ public class AuthorRestController {
 
     private final AuthorService authorService;
 
-//    @GetMapping("/authors")
-//    public List<AuthorDto> getAllAuthors() {
-//        return authorService.getAllAuthors();
-//    }
-
     @GetMapping("/author/{id}")
     AuthorDto getAuthorById(@PathVariable("id") Long id) {
         return authorService.getAuthorById(id);
