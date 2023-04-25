@@ -3,6 +3,7 @@ package com.libraryspring.libraryproject.controller.rest;
 import com.libraryspring.libraryproject.dto.UserDto;
 import com.libraryspring.libraryproject.model.User;
 import com.libraryspring.libraryproject.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "library-users")
 public class UserRestController {
     private final UserService userService;
 

@@ -11,39 +11,63 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
     @Override
     public AuthorDto getAuthorById(Long id) {
-        Author author = authorRepository.findById(id)
-                .orElseThrow();
-        AuthorDto authorDto = convertEntityToDto(author);
-        return authorDto;
-
+        log.info("Trying to find author by id {}", id);
+        Optional<Author> author = authorRepository.findById(id);
+        if(author.isPresent()){
+            AuthorDto authorDto = convertEntityToDto(author.get());
+            log.info("Found author with id: {}", authorDto.toString());
+            return authorDto;
+        }else{
+            log.error("Author with id {} not found", id);
+            throw new IllegalStateException("Author not found");
+        }
     }
 
     @Override
     public AuthorDto getByNameV1(String name) {
-        Author author = authorRepository.findAuthorByName(name)
-                .orElseThrow();
-        return convertEntityToDto(author);
+        log.info("Trying to find author by name (V1) {}", name);
+        Optional<Author> author = authorRepository.findAuthorByName(name);
+        if(author.isPresent()) {
+            AuthorDto authorDto = convertEntityToDto(author.get());
+            log.info("Found author with name {}: {}", name, authorDto.toString());
+            return authorDto;
+        }
+        else {
+            log.error("Author with name {} not found", name);
+            throw new IllegalStateException("Author not found");
+        }
     }
 
     @Override
     public AuthorDto getByNameV2(String name) {
-        Author author = authorRepository.findAuthorByNameBySql(name)
-                .orElseThrow();
-        return convertEntityToDto(author);
+        log.info("Trying to find author by name (V2) {}", name);
+        Optional<Author> author = authorRepository.findAuthorByNameBySql(name);
+        if(author.isPresent()) {
+            AuthorDto authorDto = convertEntityToDto(author.get());
+            log.info("Found author with name {}: {}", name, authorDto.toString());
+            return authorDto;
+        }
+        else {
+            log.error("Author with name {} not found", name);
+            throw new IllegalStateException("Author not found");
+        }
     }
 
     @Override
@@ -54,37 +78,55 @@ public class AuthorServiceImpl implements AuthorService {
                 return criteriaBuilder.equal(root.get("name"), name);
             }
         });
-
-        Author author = authorRepository.findOne(specification)
-                .orElseThrow();
-        return convertEntityToDto(author);
+        log.info("Trying to find author by name (V3) {}", name);
+        Optional<Author> author = authorRepository.findOne(specification);
+        if(author.isPresent()) {
+            AuthorDto authorDto = convertEntityToDto(author.get());
+            log.info("Found author with name {}: {}", name, authorDto.toString());
+            return authorDto;
+        }
+        else {
+            log.error("Author with name {} not found", name);
+            throw new IllegalStateException("Author not found");
+        }
     }
 
     @Override
     public AuthorDto createAuthor(AuthorCreateDto authorCreateDto) {
+        log.info("Creating new author: {}", authorCreateDto.toString());
         Author author = authorRepository.save(convertDtoToEntity(authorCreateDto));
         AuthorDto authorDto = convertEntityToDto(author);
+        log.info("New author created: {}", authorDto.toString());
         return authorDto;
     }
 
     @Override
     public AuthorDto updateAuthor(AuthorUpdateDto authorUpdateDto) {
-        Author author = authorRepository.findById(authorUpdateDto.getId())
-                .orElseThrow();
-       author.setName(authorUpdateDto.getName());
-       author.setSurname(authorUpdateDto.getSurname());
-
-       Author savedAuthor = authorRepository.save(author);
-        AuthorDto authorDto = convertEntityToDto(savedAuthor);
-        return authorDto;
+        log.info("Updating author with id {}", authorUpdateDto.getId());
+        Optional<Author> authorOptional = authorRepository.findById(authorUpdateDto.getId());
+        if (authorOptional.isPresent()) {
+            Author author = authorOptional.get();
+            author.setName(authorUpdateDto.getName());
+            author.setSurname(authorUpdateDto.getSurname());
+            Author savedAuthor = authorRepository.save(author);
+            AuthorDto authorDto = convertEntityToDto(savedAuthor);
+            log.info("Updated author with id {}", authorUpdateDto.getId());
+            return authorDto;
+        } else {
+            log.error("Author with id {} not found", authorUpdateDto.getId());
+            throw new IllegalStateException("Author not found");
+        }
     }
+
     @Override
     public void deleteAuthor(Long id) {
+        log.info("Deleting author with id {}", id);
         authorRepository.deleteById(id);
     }
 
     @Override
     public List<AuthorDto> getAllAuthors() {
+        log.info("Getting all authors");
         List<Author> authors = authorRepository.findAll();
         return authors.stream()
                 .map(author -> AuthorDto.builder()

@@ -1,8 +1,10 @@
 package com.libraryspring.libraryproject.service;
 
+import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookCreateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.BookUpdateDto;
+import com.libraryspring.libraryproject.model.Author;
 import com.libraryspring.libraryproject.model.Book;
 import com.libraryspring.libraryproject.model.Genre;
 import com.libraryspring.libraryproject.repository.BookRepository;
@@ -12,6 +14,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -28,23 +32,41 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAllBooks() {
+        log.info("Getting all books");
         List<Book> books = bookRepository.findAll();
-        return books.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        List<BookDto> bookDtos = books.stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toList());
+        log.info("Retrieved {} books", bookDtos.size());
+        return bookDtos;
     }
 
     @Override
     public BookDto getByNameV1(String name) {
-        Book book = bookRepository.findBookByName(name)
-                .orElseThrow();
-        return convertEntityToDto(book);
+        log.info("Trying to find book by name (V1) {}", name);
+        Optional<Book> book = bookRepository.findBookByName(name);
+        if (book.isPresent()) {
+            BookDto bookDto = convertEntityToDto(book.get());
+            log.info("Found book with name {}: {}", name, bookDto.toString());
+            return bookDto;
+        } else {
+            log.error("Book with name {} not found", name);
+            throw new IllegalStateException("Book not found");
+        }
     }
 
     @Override
     public BookDto getByNameV2(String name) {
-
-        Book book = bookRepository.findBookByNameBySql(name)
-                .orElseThrow();
-        return convertEntityToDto(book);
+        log.info("Trying to find book by name (V2) {}", name);
+        Optional<Book> book = bookRepository.findBookByNameBySql(name);
+        if (book.isPresent()) {
+            BookDto bookDto = convertEntityToDto(book.get());
+            log.info("Found book with name {}: {}", name, bookDto.toString());
+            return bookDto;
+        } else {
+            log.error("Book with name {} not found", name);
+            throw new IllegalStateException("Book not found");
+        }
     }
 
     @Override
@@ -56,18 +78,28 @@ public class BookServiceImpl implements BookService {
             }
         });
 
-        Book book = bookRepository.findOne(specification)
-                .orElseThrow();
-        return convertEntityToDto(book);
+        log.info("Trying to find book by name (V3) {}", name);
+        Optional<Book> book = bookRepository.findOne(specification);
+        if (book.isPresent()) {
+            BookDto bookDto = convertEntityToDto(book.get());
+            log.info("Found book with name {}: {}", name, bookDto.toString());
+            return bookDto;
+        } else {
+            log.error("Book with name {} not found", name);
+            throw new IllegalStateException("Book not found");
+        }
     }
 
     @Override
     public BookDto createBook(BookCreateDto bookCreateDto) {
-        Genre genre = genreRepository.findByName(bookCreateDto.getGenre().getName());
+        Genre genre = genreRepository.findByName(bookCreateDto.getGenre()
+                .getName());
         if (genre == null) {
-            genre = new Genre(bookCreateDto.getGenre().getName());
+            genre = new Genre(bookCreateDto.getGenre()
+                    .getName());
             genre = genreRepository.save(genre);
         }
+        log.info("Creating new book: {}", bookCreateDto.toString());
 
         Book book = Book.builder()
                 .name(bookCreateDto.getName())
@@ -75,8 +107,8 @@ public class BookServiceImpl implements BookService {
                 .build();
 
         book = bookRepository.save(book);
-
         BookDto bookDto = convertEntityToDto(book);
+        log.info("New book created: {}", bookDto.toString());
         return bookDto;
     }
 
@@ -90,19 +122,25 @@ public class BookServiceImpl implements BookService {
             genre = genreRepository.save(genre);
         }
 
-        Book book = bookRepository.findById(bookUpdateDto.getId())
-                .orElseThrow();
-        book.setName(bookUpdateDto.getName());
-        book.setGenre(genre);
+        log.info("Updating book with id {}", bookUpdateDto.getId());
+        Optional<Book> book = bookRepository.findById(bookUpdateDto.getId());
+        if (book.isPresent()) {
+            book.get().setName(bookUpdateDto.getName());
+            book.get().setGenre(genre);
 
-        Book savedBook = bookRepository.save(book);
-        BookDto bookDto = convertEntityToDto(savedBook);
-        return bookDto;
+            Book savedBook = bookRepository.save(book.get());
+            BookDto bookDto = convertEntityToDto(savedBook);
+            return bookDto;
+        } else {
+            log.error("Book with id {} not found", bookUpdateDto.getId());
+            throw new IllegalStateException("Book not found");
+        }
     }
 
 
     @Override
     public void deleteBook(Long id) {
+        log.info("Deleting book with id {}", id);
         bookRepository.deleteById(id);
     }
 
@@ -125,7 +163,6 @@ public class BookServiceImpl implements BookService {
                 .genre(genre)
                 .build();
     }
-
 
 
     private BookDto convertEntityToDto(Book book) {
