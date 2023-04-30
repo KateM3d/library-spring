@@ -158,7 +158,6 @@ public class AuthorRestControllerTest {
     }
 
 
-    //    @PutMapping("/author/update")
     @Test
     public void testUpdateAuthor() throws Exception {
         Long id = 1L;
