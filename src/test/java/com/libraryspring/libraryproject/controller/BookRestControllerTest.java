@@ -6,6 +6,7 @@ import com.libraryspring.libraryproject.dto.BookCreateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.BookUpdateDto;
 import com.libraryspring.libraryproject.model.Genre;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc(addFilters = false)
 public class BookRestControllerTest {
 
@@ -101,7 +103,7 @@ public class BookRestControllerTest {
 
     @Test
     public void testCreateBook() throws Exception {
-        String name = "Tom Soyer";
+        String name = "Beauty and the Beast";
         Genre genre = new Genre("Story");
 
         BookCreateDto bookCreateDto = BookCreateDto.builder()
