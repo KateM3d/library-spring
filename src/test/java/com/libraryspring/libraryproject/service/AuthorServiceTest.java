@@ -111,7 +111,7 @@ public class AuthorServiceTest {
 
     @Test
     public void testCreateAuthor() {
-        AuthorCreateDto authorCreateDto = new AuthorCreateDto("John", "Doe");
+        AuthorCreateDto authorCreateDto = new AuthorCreateDto("John", "Does");
         Author author = new Author(1L, authorCreateDto.getName(), authorCreateDto.getSurname(), new HashSet<>());
         when(authorRepository.save(any(Author.class))).thenReturn(author);
 
