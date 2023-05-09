@@ -1,26 +1,27 @@
-name: Java CI/CD
-
+name: only-tests
 on:
   push:
-    branches:
+    branches-ignore:
       - main
-  pull_request:
-    branches:
-      - main
+      - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  run-all-tests:
+    runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: 17
           distribution: 'adopt'
 
-      - name: Build and test
-        run: mvn test
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.4
+        with:
+          maven-version: 3.8.2
+
+      - name: All the Tests and Coverage check
+        run: mvn clean install
