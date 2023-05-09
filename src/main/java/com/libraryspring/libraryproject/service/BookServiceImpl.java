@@ -1,10 +1,8 @@
 package com.libraryspring.libraryproject.service;
 
-import com.libraryspring.libraryproject.dto.AuthorDto;
 import com.libraryspring.libraryproject.dto.BookCreateDto;
 import com.libraryspring.libraryproject.dto.BookDto;
 import com.libraryspring.libraryproject.dto.BookUpdateDto;
-import com.libraryspring.libraryproject.model.Author;
 import com.libraryspring.libraryproject.model.Book;
 import com.libraryspring.libraryproject.model.Genre;
 import com.libraryspring.libraryproject.repository.BookRepository;

@@ -1,7 +1,9 @@
 package com.libraryspring.libraryproject.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Set;
 
@@ -11,6 +13,7 @@ import java.util.Set;
 @Setter
 @Builder
 @Entity
+@Validated
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +28,5 @@ public class Genre {
     public Genre(String name) {
         this.name = name;
     }
+
 }
