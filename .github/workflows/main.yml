@@ -23,6 +23,6 @@ jobs:
           distribution: 'adopt'
 
       - name: Build and test
+        run: mvn test
         with:
           maven-version: 3.8.2
-        run: mvn test
