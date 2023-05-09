@@ -18,6 +18,11 @@ jobs:
         with:
           ref: main
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
