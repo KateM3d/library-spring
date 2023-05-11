@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-all-tests:
-    runs-on: self-hosted
+    runs-on: macos-latest
     defaults:
       run:
         shell: bash
